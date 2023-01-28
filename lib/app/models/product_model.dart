@@ -5,8 +5,15 @@ class ProductModel {
   final String name;
   final String description;
   final String img;
+  final double price;
 
-  ProductModel(this.id, this.name, this.description, this.img);
+  ProductModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.img,
+    required this.price,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -14,16 +21,17 @@ class ProductModel {
       'name': name,
       'description': description,
       'img': img,
+      'price': price
     };
   }
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      map['id']?.toInt() ?? 0,
-      map['name'] ?? '',
-      map['description'] ?? '',
-      map['img'] ?? '',
-    );
+        id: map['id']?.toInt() ?? 0,
+        name: map['name'] ?? '',
+        description: map['description'] ?? '',
+        img: map['img'] ?? '',
+        price: map['price']?.toDouble() ?? 0);
   }
 
   String toJson() => json.encode(toMap());
