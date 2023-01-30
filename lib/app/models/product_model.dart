@@ -20,7 +20,7 @@ class ProductModel {
       'id': id,
       'name': name,
       'description': description,
-      'img': img,
+      'image': img,
       'price': price
     };
   }
@@ -30,7 +30,7 @@ class ProductModel {
         id: map['id']?.toInt() ?? 0,
         name: map['name'] ?? '',
         description: map['description'] ?? '',
-        img: map['img'] ?? '',
+        img: map['image'] ?? '',
         price: map['price']?.toDouble() ?? 0);
   }
 
