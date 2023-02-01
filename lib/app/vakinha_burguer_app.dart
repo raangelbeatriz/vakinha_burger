@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vakinha_burguer/app/core/provider/application_bindings.dart';
 import 'package:vakinha_burguer/app/pages/home/home_router.dart';
+import 'package:vakinha_burguer/app/pages/product_details/product_details_router.dart';
 import 'package:vakinha_burguer/app/pages/splash/splash_page.dart';
 
 import 'core/routes/routes.dart';
@@ -17,7 +18,8 @@ class VakinhaBurguerApp extends StatelessWidget {
         theme: ThemeConfig.theme,
         routes: {
           Routes.splashPage: (_) => const SplashPage(),
-          Routes.home: (_) => HomeRouter.page
+          Routes.home: (_) => HomeRouter.page,
+          Routes.productDetails: (_) => ProductDetailsRouter.page
         },
       ),
     );
