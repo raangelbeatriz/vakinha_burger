@@ -1,13 +1,30 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vakinha_burguer/app/core/extensions/formatter_extensions.dart';
+
 import 'package:vakinha_burguer/app/core/ui/helpers/size_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_increment_decrement.dart';
+import 'package:vakinha_burguer/app/models/product_model.dart';
+import 'package:vakinha_burguer/app/pages/product_details/product_details_controller.dart';
 
-class ProductDetails extends StatelessWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+import '../../core/ui/base_state/base_state.dart';
 
+class ProductDetails extends StatefulWidget {
+  final ProductModel productModel;
+  const ProductDetails({
+    Key? key,
+    required this.productModel,
+  }) : super(key: key);
+
+  @override
+  State<ProductDetails> createState() => _ProductDetailsState();
+}
+
+class _ProductDetailsState
+    extends BaseState<ProductDetails, ProductDetailsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +35,10 @@ class ProductDetails extends StatelessWidget {
           Container(
             width: context.width,
             height: context.percentHeigth(.4),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
                   image: NetworkImage(
-                    'https://assets.unileversolutions.com/recipes-v2/106684.jpg?imwidth=800',
+                    widget.productModel.img,
                   ),
                   fit: BoxFit.cover),
             ),
@@ -32,19 +49,18 @@ class ProductDetails extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              'X-Tudo',
+              widget.productModel.name,
               style: context.textStyles.textExtraBold.copyWith(fontSize: 22),
             ),
           ),
           const SizedBox(
             height: 10,
           ),
-          const Expanded(
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: SingleChildScrollView(
-                child: Text(
-                    'Lanche acompanha pão, hambúguer, mussarela, alface, tomate e maionese'),
+                child: Text(widget.productModel.description),
               ),
             ),
           ),
@@ -56,34 +72,52 @@ class ProductDetails extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 height: 68,
                 width: context.percentWidth(.5),
-                child: const DeliveryIncrementDecrement(),
+                child: BlocBuilder<ProductDetailsController, int>(
+                  builder: (context, amount) {
+                    return DeliveryIncrementDecrement(
+                      amount: amount,
+                      incrementOnTap: () {
+                        controller.increment();
+                      },
+                      decrementOnTap: () {
+                        controller.decrement();
+                      },
+                    );
+                  },
+                ),
               ),
               Container(
                 height: 68,
                 width: context.percentWidth(.5),
                 padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Adicionar',
-                        style: context.textStyles.textExtraBold
-                            .copyWith(fontSize: 13),
+                child: BlocBuilder<ProductDetailsController, int>(
+                  builder: (context, amount) {
+                    return ElevatedButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Adicionar',
+                              style: context.textStyles.textExtraBold
+                                  .copyWith(fontSize: 13),
+                            ),
+                          ),
+                          Expanded(
+                            child: AutoSizeText(
+                              (widget.productModel.price * amount).currencyPTBR,
+                              maxFontSize: 13,
+                              minFontSize: 5,
+                              maxLines: 1,
+                              textAlign: TextAlign.end,
+                              style: context.textStyles.textExtraBold,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: AutoSizeText(
-                          r'R$22,66',
-                          maxFontSize: 13,
-                          minFontSize: 5,
-                          maxLines: 1,
-                          style: context.textStyles.textExtraBold,
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               )
             ],

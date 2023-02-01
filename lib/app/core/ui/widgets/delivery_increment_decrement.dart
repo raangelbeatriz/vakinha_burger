@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+
 import 'package:vakinha_burguer/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 
 class DeliveryIncrementDecrement extends StatelessWidget {
-  const DeliveryIncrementDecrement({Key? key}) : super(key: key);
+  final int amount;
+  final VoidCallback incrementOnTap;
+  final VoidCallback decrementOnTap;
+  const DeliveryIncrementDecrement({
+    super.key,
+    required this.amount,
+    required this.incrementOnTap,
+    required this.decrementOnTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,29 +24,35 @@ class DeliveryIncrementDecrement extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: Text(
-              '-',
-              style: context.textStyles.textMedium
-                  .copyWith(fontSize: 22, color: Colors.grey),
+          InkWell(
+            onTap: decrementOnTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+              ),
+              child: Text(
+                '-',
+                style: context.textStyles.textMedium
+                    .copyWith(fontSize: 22, color: Colors.grey),
+              ),
             ),
           ),
           Text(
-            '1',
+            amount.toString(),
             style: context.textStyles.textRegular
                 .copyWith(fontSize: 17, color: context.colors.secondary),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-            ),
-            child: Text(
-              '+',
-              style: context.textStyles.textMedium
-                  .copyWith(fontSize: 22, color: context.colors.secondary),
+          InkWell(
+            onTap: incrementOnTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+              ),
+              child: Text(
+                '+',
+                style: context.textStyles.textMedium
+                    .copyWith(fontSize: 22, color: context.colors.secondary),
+              ),
             ),
           )
         ],
