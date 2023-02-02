@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:vakinha_burguer/app/pages/home/home_state.dart';
 import 'package:vakinha_burguer/app/repository/products/products_repository.dart';
 
+import '../../dto/order_product_dto.dart';
+
 class HomeController extends Cubit<HomeState> {
   final ProductsRepository _productsRepository;
   HomeController(this._productsRepository) : super(const HomeState.initial());
@@ -19,5 +21,13 @@ class HomeController extends Cubit<HomeState> {
           status: HomeStateStatus.error,
           errorMessage: 'Erro ao buscar produtos'));
     }
+  }
+
+  void addOrUpdateBag(OrderProductDto order) {
+    final shoppingBag = [
+      ...state.shoppingBag
+    ]; //Spread operator duplicates list with new memory reference
+    shoppingBag.add(order);
+    emit(state.copyWith(shoppingBag: shoppingBag));
   }
 }

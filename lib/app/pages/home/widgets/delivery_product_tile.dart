@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vakinha_burguer/app/core/extensions/formatter_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
+import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/models/product_model.dart';
+import 'package:vakinha_burguer/app/pages/home/home_controller.dart';
 
 import '../../../core/routes/routes.dart';
 
@@ -13,9 +16,14 @@ class DeliveryProductTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, Routes.productDetails,
+      onTap: () async {
+        final controller = context.read<HomeController>();
+        final orderDTO = await Navigator.pushNamed(
+            context, Routes.productDetails,
             arguments: {'product': product});
+        if (orderDTO != null) {
+          controller.addOrUpdateBag(orderDTO as OrderProductDto);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

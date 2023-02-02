@@ -7,6 +7,7 @@ import 'package:vakinha_burguer/app/core/ui/helpers/size_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_increment_decrement.dart';
+import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/models/product_model.dart';
 import 'package:vakinha_burguer/app/pages/product_details/product_details_controller.dart';
 
@@ -93,7 +94,13 @@ class _ProductDetailsState
                 child: BlocBuilder<ProductDetailsController, int>(
                   builder: (context, amount) {
                     return ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(
+                          context,
+                          OrderProductDto(
+                              product: widget.productModel, amount: amount),
+                        );
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
