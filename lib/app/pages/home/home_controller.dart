@@ -27,7 +27,21 @@ class HomeController extends Cubit<HomeState> {
     final shoppingBag = [
       ...state.shoppingBag
     ]; //Spread operator duplicates list with new memory reference
-    shoppingBag.add(order);
+
+    //Returns -1 if [element] is not found.
+    final orderIndex =
+        shoppingBag.indexWhere((orderP) => orderP.product == order.product);
+
+    if (orderIndex > -1) {
+      if (order.amount == 0) {
+        shoppingBag.removeAt(orderIndex);
+      } else {
+        shoppingBag[orderIndex] = order;
+      }
+    } else {
+      shoppingBag.add(order);
+    }
+
     emit(state.copyWith(shoppingBag: shoppingBag));
   }
 }

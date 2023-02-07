@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:vakinha_burguer/app/core/ui/base_state/base_state.dart';
-import 'package:vakinha_burguer/app/core/ui/helpers/messagea.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_appbar.dart';
-import 'package:vakinha_burguer/app/models/product_model.dart';
 import 'package:vakinha_burguer/app/pages/home/home_controller.dart';
 import 'package:vakinha_burguer/app/pages/home/home_state.dart';
 import 'package:vakinha_burguer/app/pages/home/widgets/delivery_product_tile.dart';
+import 'package:vakinha_burguer/app/pages/home/widgets/shopping_bag.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -49,11 +47,19 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
                       itemCount: state.products.length,
                       itemBuilder: (context, index) {
                         final product = state.products[index];
+                        final order = state.shoppingBag.where(
+                          (order) => order.product == product,
+                        );
                         return DeliveryProductTile(
                           product: product,
+                          orderProduct: order.isNotEmpty ? order.first : null,
                         );
                       }),
                 ),
+                Visibility(
+                  visible: state.shoppingBag.isNotEmpty,
+                  child: ShoppingBag(bag: state.shoppingBag),
+                )
               ],
             );
           }),

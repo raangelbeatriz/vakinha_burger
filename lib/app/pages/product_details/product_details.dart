@@ -11,14 +11,15 @@ import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/models/product_model.dart';
 import 'package:vakinha_burguer/app/pages/product_details/product_details_controller.dart';
 
+import '../../core/routes/routes.dart';
 import '../../core/ui/base_state/base_state.dart';
 
 class ProductDetails extends StatefulWidget {
   final ProductModel productModel;
-  const ProductDetails({
-    Key? key,
-    required this.productModel,
-  }) : super(key: key);
+  final OrderProductDto? order;
+  const ProductDetails(
+      {Key? key, required this.productModel, required this.order})
+      : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -27,6 +28,43 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState
     extends BaseState<ProductDetails, ProductDetailsController> {
   @override
+  void onReady() {
+    final amount = widget.order?.amount ?? 1;
+    controller.initial(hasOrder: widget.order != null, amount: amount);
+  }
+
+  void _showConfirmDelete(int amount) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Deseja excluir o produto?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Cancelar',
+              style:
+                  context.textStyles.textExtraBold.copyWith(color: Colors.red),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(
+                context,
+                OrderProductDto(product: widget.productModel, amount: amount),
+              );
+            },
+            child: Text('Confirmar', style: context.textStyles.textExtraBold),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DeliveryAppBar(),
@@ -94,34 +132,50 @@ class _ProductDetailsState
                 child: BlocBuilder<ProductDetailsController, int>(
                   builder: (context, amount) {
                     return ElevatedButton(
+                      style: amount == 0
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red)
+                          : null,
                       onPressed: () {
-                        Navigator.pop(
-                          context,
-                          OrderProductDto(
-                              product: widget.productModel, amount: amount),
-                        );
+                        if (amount == 0) {
+                          _showConfirmDelete(amount);
+                        } else {
+                          Navigator.pop(
+                            context,
+                            OrderProductDto(
+                                product: widget.productModel, amount: amount),
+                          );
+                        }
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Adicionar',
-                              style: context.textStyles.textExtraBold
-                                  .copyWith(fontSize: 13),
+                      child: Visibility(
+                        visible: amount > 0,
+                        replacement: Text(
+                          'Excluir produto',
+                          style: context.textStyles.textExtraBold,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Adicionar',
+                                style: context.textStyles.textExtraBold
+                                    .copyWith(fontSize: 13),
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: AutoSizeText(
-                              (widget.productModel.price * amount).currencyPTBR,
-                              maxFontSize: 13,
-                              minFontSize: 5,
-                              maxLines: 1,
-                              textAlign: TextAlign.end,
-                              style: context.textStyles.textExtraBold,
+                            Expanded(
+                              child: AutoSizeText(
+                                (widget.productModel.price * amount)
+                                    .currencyPTBR,
+                                maxFontSize: 13,
+                                minFontSize: 5,
+                                maxLines: 1,
+                                textAlign: TextAlign.end,
+                                style: context.textStyles.textExtraBold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

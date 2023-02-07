@@ -16,7 +16,10 @@ class ProductDetailsRouter {
           //Use instead of child when child requires business logic
           final args = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;
-          return ProductDetails(productModel: args['product']);
+          return ProductDetails(
+            productModel: args['product'],
+            order: args['order'],
+          );
         },
       );
 }
