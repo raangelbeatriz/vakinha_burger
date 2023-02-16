@@ -19,7 +19,8 @@ class ShoppingBag extends StatelessWidget {
     // }
     final String? token = await context.read<AuthRepository>().getAcessToken();
     if (token == null) {
-      navigator.pushNamed(Routes.login);
+      final loginResult = await navigator.pushNamed(Routes.login);
+      print('Login result é $loginResult');
     }
   }
 

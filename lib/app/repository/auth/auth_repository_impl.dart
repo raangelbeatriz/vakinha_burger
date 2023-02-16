@@ -45,6 +45,18 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final sp = await SharedPreferences.getInstance();
       return sp.getString('accessToken');
+    } catch (e) {
+      log('Erro ao acessar token', error: e);
+      throw RepositoryException(message: 'Erro ao acessar token');
+    }
+  }
+
+  @override
+  Future<void> setToken(String accessToken, String refreshToken) async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString('accessToken', accessToken);
+      await sp.setString('refreshToken', refreshToken);
     } on Exception catch (e) {
       log('Erro ao acessar token', error: e);
       throw RepositoryException(message: 'Erro ao acessar token');

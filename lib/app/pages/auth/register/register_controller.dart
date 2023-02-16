@@ -19,6 +19,7 @@ class RegisterController extends Cubit<RegisterState> {
       emit(state.copyWith(status: RegisterStatus.success));
     } catch (e, s) {
       log('Erro ao cadastrar usuário', error: e, stackTrace: s);
+      emit(state.copyWith(status: RegisterStatus.error));
     }
   }
 }
