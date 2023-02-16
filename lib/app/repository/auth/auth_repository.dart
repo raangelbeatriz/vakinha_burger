@@ -6,4 +6,6 @@ abstract class AuthRepository {
   Future<AuthModel> login(String email, String password);
 
   Future<String?> getAcessToken();
+
+  Future<void> setToken(String accessToken, String refreshToken);
 }
