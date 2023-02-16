@@ -8,6 +8,8 @@ import 'package:vakinha_burguer/app/pages/splash/splash_page.dart';
 
 import 'core/routes/routes.dart';
 import 'core/ui/theme/theme_config.dart';
+import 'pages/auth/login/login_router.dart';
+import 'pages/auth/register/register_router.dart';
 
 class VakinhaBurguerApp extends StatelessWidget {
   const VakinhaBurguerApp({Key? key}) : super(key: key);
@@ -22,8 +24,8 @@ class VakinhaBurguerApp extends StatelessWidget {
           Routes.splashPage: (_) => const SplashPage(),
           Routes.home: (_) => HomeRouter.page,
           Routes.productDetails: (_) => ProductDetailsRouter.page,
-          Routes.login: (_) => const LoginPage(),
-          Routes.register: (_) => const RegisterPage()
+          Routes.login: (_) => LoginRouter.page,
+          Routes.register: (_) => RegisterRouter.page
         },
       ),
     );
