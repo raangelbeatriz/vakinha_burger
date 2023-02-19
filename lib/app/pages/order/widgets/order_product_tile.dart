@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:vakinha_burguer/app/core/extensions/formatter_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_increment_decrement.dart';
+import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 
 class OrderProductTile extends StatelessWidget {
-  const OrderProductTile({Key? key}) : super(key: key);
+  final int index;
+  final OrderProductDto orderProduct;
+  const OrderProductTile(
+      {Key? key, required this.index, required this.orderProduct})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final product = orderProduct.product;
     return Column(
       children: [
         Padding(
@@ -15,7 +22,7 @@ class OrderProductTile extends StatelessWidget {
           child: Row(
             children: [
               Image.network(
-                'https://assets.unileversolutions.com/recipes-v2/106684.jpg?imwidth=800',
+                product.img,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
@@ -27,7 +34,7 @@ class OrderProductTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'X-Burguer',
+                        product.name,
                         style: context.textStyles.textRegular
                             .copyWith(fontSize: 16),
                       ),
@@ -35,7 +42,7 @@ class OrderProductTile extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '19.90',
+                            (product.price * orderProduct.amount).currencyPTBR,
                             style: context.textStyles.textMedium.copyWith(
                                 fontSize: 14, color: context.colors.secondary),
                           ),

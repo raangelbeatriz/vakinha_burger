@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vakinha_burguer/app/pages/order/order_controller.dart';
+import 'package:vakinha_burguer/app/pages/order/order_state.dart';
+import 'package:validatorless/validatorless.dart';
+
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_button.dart';
+import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/pages/order/widgets/order_product_tile.dart';
 import 'package:vakinha_burguer/app/pages/order/widgets/payments_types_field.dart';
-import 'package:validatorless/validatorless.dart';
 
+import '../../core/ui/base_state/base_state.dart';
 import 'widgets/order_field.dart';
 
-class OrderPage extends StatelessWidget {
-  const OrderPage({Key? key}) : super(key: key);
+class OrderPage extends StatefulWidget {
+  const OrderPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<OrderPage> createState() => _OrderPageState();
+}
+
+class _OrderPageState extends BaseState<OrderPage, OrderController> {
+  @override
+  void onReady() {
+    final products =
+        ModalRoute.of(context)!.settings.arguments as List<OrderProductDto>;
+    controller.load(products);
+    super.onReady();
+  }
+
   @override
   Widget build(BuildContext context) {
     final addressController = TextEditingController();
@@ -36,8 +58,20 @@ class OrderPage extends StatelessWidget {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: OrderProductTile(),
+          BlocSelector<OrderController, OrderState, List<OrderProductDto>>(
+            selector: (state) => state.products,
+            builder: (context, products) {
+              return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                childCount: products.length,
+                (context, index) {
+                  return OrderProductTile(
+                    index: index,
+                    orderProduct: products[index],
+                  );
+                },
+              ));
+            },
           ),
           SliverToBoxAdapter(
             child: Column(
