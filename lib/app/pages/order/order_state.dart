@@ -7,7 +7,7 @@ import 'package:vakinha_burguer/app/models/payment_type_model.dart';
 part 'order_state.g.dart';
 
 @match
-enum OrderStatus { initial, loading, loaded, error }
+enum OrderStatus { initial, loading, loaded, error, updateOrder }
 
 class OrderState extends Equatable {
   final OrderStatus status;
@@ -26,6 +26,9 @@ class OrderState extends Equatable {
         products = const [],
         paymentTypes = const [],
         errorMessage = null;
+
+  double get totalOrder => products.fold(
+      0.0, (previousValue, element) => previousValue + element.totalPrice);
   @override
   List<Object?> get props => [status, products, paymentTypes, errorMessage];
 

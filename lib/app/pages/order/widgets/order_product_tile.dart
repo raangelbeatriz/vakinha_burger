@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vakinha_burguer/app/core/extensions/formatter_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/colors_app.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/core/ui/widgets/delivery_increment_decrement.dart';
 import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
+import 'package:vakinha_burguer/app/pages/order/order_controller.dart';
 
 class OrderProductTile extends StatelessWidget {
   final int index;
@@ -47,9 +49,17 @@ class OrderProductTile extends StatelessWidget {
                                 fontSize: 14, color: context.colors.secondary),
                           ),
                           DeliveryIncrementDecrement.compact(
-                              amount: 1,
-                              incrementOnTap: () {},
-                              decrementOnTap: () {})
+                              amount: orderProduct.amount,
+                              incrementOnTap: () {
+                                context
+                                    .read<OrderController>()
+                                    .incrementProduct(index);
+                              },
+                              decrementOnTap: () {
+                                context
+                                    .read<OrderController>()
+                                    .decrementProduct(index);
+                              })
                         ],
                       ),
                     ],
