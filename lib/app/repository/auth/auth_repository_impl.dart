@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -15,9 +16,9 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<AuthModel> login(String email, String password) async {
     try {
-      final register = await _customDio
-          .unauth()
-          .post('/auth', data: {'email': email, 'password': password});
+      Map<String, dynamic> body = {'email': email, 'password': password};
+      final register =
+          await _customDio.unauth().post('/auth', data: jsonEncode(body));
       return AuthModel.fromMap(register.data);
     } on DioError catch (e, s) {
       if (e.response?.statusCode == 403) {
@@ -32,8 +33,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> register(String name, String email, String password) async {
     try {
-      await _customDio.unauth().post('/users',
-          data: {'name': name, 'email': email, 'password': password});
+      Map<String, dynamic> body = {
+        'name': name,
+        'email': email,
+        'password': password
+      };
+      await _customDio.unauth().post('/users', data: jsonEncode(body));
     } on DioError catch (e, s) {
       log('Erro ao registrar usuario', error: e, stackTrace: s);
       throw RepositoryException(message: 'Erro ao registrar usuário');
