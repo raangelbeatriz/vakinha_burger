@@ -7,6 +7,6 @@ Future<void> main() async {
   await Env.i.load();
 
   runApp(
-    const VakinhaBurguerApp(),
+    VakinhaBurguerApp(),
   );
 }

@@ -7,7 +7,16 @@ import 'package:vakinha_burguer/app/models/payment_type_model.dart';
 part 'order_state.g.dart';
 
 @match
-enum OrderStatus { initial, loading, loaded, error, updateOrder }
+enum OrderStatus {
+  initial,
+  loading,
+  loaded,
+  error,
+  updateOrder,
+  confirmDeleteProduct,
+  emptyBag,
+  success
+}
 
 class OrderState extends Equatable {
   final OrderStatus status;
@@ -43,4 +52,16 @@ class OrderState extends Equatable {
         paymentTypes: paymentTypes ?? this.paymentTypes,
         errorMessage: errorMessage ?? this.errorMessage);
   }
+}
+
+class OrderConfirmDeleteProductState extends OrderState {
+  final OrderProductDto productDto;
+  final int index;
+  const OrderConfirmDeleteProductState(
+      {required super.status,
+      required super.products,
+      required super.paymentTypes,
+      required this.productDto,
+      required this.index,
+      super.errorMessage});
 }

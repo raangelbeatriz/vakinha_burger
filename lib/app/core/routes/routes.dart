@@ -5,4 +5,5 @@ class Routes {
   static String get login => '/auth/login';
   static String get register => '/auth/register';
   static String get order => '/order';
+  static String get orderCompleted => '/order/completed';
 }

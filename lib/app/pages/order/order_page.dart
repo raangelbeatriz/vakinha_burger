@@ -13,6 +13,7 @@ import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/pages/order/widgets/order_product_tile.dart';
 import 'package:vakinha_burguer/app/pages/order/widgets/payments_types_field.dart';
 
+import '../../core/routes/routes.dart';
 import '../../core/ui/base_state/base_state.dart';
 import 'widgets/order_field.dart';
 
@@ -46,19 +47,68 @@ class _OrderPageState extends BaseState<OrderPage, OrderController> {
     super.dispose();
   }
 
+  void _showConfirmProductDialog(OrderConfirmDeleteProductState state) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) => AlertDialog(
+        title:
+            Text('Deseja excluir o produto ${state.productDto.product.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.cancelDeleteProcess();
+            },
+            child: Text(
+              'Cancelar',
+              style:
+                  context.textStyles.textExtraBold.copyWith(color: Colors.red),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.decrementProduct(state.index);
+            },
+            child: Text('Confirmar', style: context.textStyles.textExtraBold),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<OrderController, OrderState>(
       listener: (context, state) {
         state.status.matchAny(
-            any: () => hideLoader(),
-            loaded: () => hideLoader(),
-            loading: () => showLoader(),
-            updateOrder: () => hideLoader(),
-            error: () {
-              hideLoader();
-              showError(state.errorMessage ?? 'Erro');
-            });
+          any: () => hideLoader(),
+          loaded: () => hideLoader(),
+          loading: () => showLoader(),
+          updateOrder: () => hideLoader(),
+          confirmDeleteProduct: () {
+            hideLoader();
+            if (state is OrderConfirmDeleteProductState) {
+              _showConfirmProductDialog(state);
+            }
+          },
+          emptyBag: () {
+            hideLoader();
+            showInfo(
+                'Sua sacola está vazia, por favor selecione um produto para realizar seu pedido');
+            Navigator.pop(context, <OrderProductDto>[]);
+          },
+          error: () {
+            hideLoader();
+            showError(state.errorMessage ?? 'Erro');
+          },
+          success: () {
+            hideLoader();
+            Navigator.popAndPushNamed(context, Routes.orderCompleted,
+                result: <OrderProductDto>[]);
+          },
+        );
       },
       child: WillPopScope(
         onWillPop: () async {
@@ -82,7 +132,9 @@ class _OrderPageState extends BaseState<OrderPage, OrderController> {
                           style: context.textStyles.textTitle,
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.emptyBag();
+                          },
                           icon: Image.asset('assets/images/trashRegular.png'),
                         )
                       ],
@@ -196,8 +248,15 @@ class _OrderPageState extends BaseState<OrderPage, OrderController> {
                             height: 48,
                             width: double.infinity,
                             onPressed: () {
+                              final valid =
+                                  _formKey.currentState?.validate() ?? false;
                               paymentValid.value = paymentTypeId != null;
-                              if (_formKey.currentState?.validate() ?? false) {}
+                              if (valid && paymentTypeId != null) {
+                                controller.saveOrder(
+                                    address: _addressController.text,
+                                    document: _cpfController.text,
+                                    paymentMethodId: paymentTypeId!);
+                              }
                             },
                             label: 'FINALIZAR'),
                       )
