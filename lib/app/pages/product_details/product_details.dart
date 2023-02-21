@@ -11,7 +11,6 @@ import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
 import 'package:vakinha_burguer/app/models/product_model.dart';
 import 'package:vakinha_burguer/app/pages/product_details/product_details_controller.dart';
 
-import '../../core/routes/routes.dart';
 import '../../core/ui/base_state/base_state.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -65,6 +64,7 @@ class _ProductDetailsState
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DeliveryAppBar(),

@@ -4,6 +4,7 @@ import 'package:vakinha_burguer/app/core/extensions/formatter_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/helpers/size_extensions.dart';
 import 'package:vakinha_burguer/app/core/ui/styles/text_styles.dart';
 import 'package:vakinha_burguer/app/dto/order_product_dto.dart';
+import 'package:vakinha_burguer/app/pages/home/home_controller.dart';
 
 import '../../../core/routes/routes.dart';
 import '../../../repository/auth/auth_repository.dart';
@@ -13,15 +14,16 @@ class ShoppingBag extends StatelessWidget {
   final List<OrderProductDto> bag;
   Future<void> _goOrder(BuildContext context) async {
     final navigator = Navigator.of(context);
-    // final sp = await SharedPreferences.getInstance();
-    // if (!sp.containsKey('accessToken')) {
-    //   navigator.pushNamed(Routes.login);
-    // }
+    final controller = context.read<HomeController>();
     final String? token = await context.read<AuthRepository>().getAcessToken();
     if (token == null) {
       final loginResult = await navigator.pushNamed(Routes.login);
-      print('Login result é $loginResult');
+      if (loginResult == null || loginResult == false) {
+        return;
+      }
     }
+    final updateBag = await navigator.pushNamed(Routes.order, arguments: bag);
+    controller.updateBag(updateBag as List<OrderProductDto>);
   }
 
   @override
