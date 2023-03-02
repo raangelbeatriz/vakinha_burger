@@ -53,8 +53,7 @@ class AuthInterceptor extends Interceptor {
       final Map<String, dynamic> body = {
         'refresh_token': refreshToken,
       };
-      final resultRefresh =
-          await _dio.auth().put('/auth/refresh', data: jsonEncode(body));
+      final resultRefresh = await _dio.auth().put('/auth/refresh', data: body);
 
       await sp.setString('accessToken', resultRefresh.data!['access_token']);
       await sp.setString('refreshToken', resultRefresh.data!['refresh_token']);

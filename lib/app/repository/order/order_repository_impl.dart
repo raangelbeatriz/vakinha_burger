@@ -44,7 +44,7 @@ class OrderRepositoryImpl implements OrderRepository {
         'CPF': orderDto.document,
         'payment_method_id': orderDto.paymentMethodId,
       };
-      await _dio.auth().post('/orders', data: jsonEncode(body));
+      await _dio.auth().post('/orders', data: body);
     } on DioError catch (e, s) {
       log('Erro ao salvar pedido', error: e, stackTrace: s);
       throw RepositoryException(message: 'Erro ao salvar pedido');
