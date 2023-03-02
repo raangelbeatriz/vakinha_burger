@@ -17,8 +17,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthModel> login(String email, String password) async {
     try {
       Map<String, dynamic> body = {'email': email, 'password': password};
-      final register =
-          await _customDio.unauth().post('/auth', data: jsonEncode(body));
+      final register = await _customDio.unauth().post('/auth', data: body);
       return AuthModel.fromMap(register.data);
     } on DioError catch (e, s) {
       if (e.response?.statusCode == 403) {
@@ -38,7 +37,7 @@ class AuthRepositoryImpl implements AuthRepository {
         'email': email,
         'password': password
       };
-      await _customDio.unauth().post('/users', data: jsonEncode(body));
+      await _customDio.unauth().post('/users', data: body);
     } on DioError catch (e, s) {
       log('Erro ao registrar usuario', error: e, stackTrace: s);
       throw RepositoryException(message: 'Erro ao registrar usuário');
